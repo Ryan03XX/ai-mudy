@@ -515,6 +515,42 @@ body {
   align-items: start;
 }
 
+.triage-output-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.triage-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.triage-form textarea {
+  width: 100%;
+  padding: 0.85rem;
+  border: 1.5px solid #d4e8f2;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafcfd;
+}
+
+.triage-form textarea:focus {
+  outline: none;
+  border-color: #00b4d8;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.12);
+  background: white;
+}
+
+.triage-form textarea:disabled {
+  background: #f4f9fc;
+}
+
 .section-badge {
   display: inline-block;
   font-size: 0.65rem;
@@ -543,11 +579,112 @@ body {
   border-top: 3px solid #10b981;
 }
 
+.appointment-panel {
+  border-top: 3px solid #8b5cf6;
+}
+
+.appointment-badge {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.appointment-status {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.78rem;
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.output-placeholder-compact {
+  min-height: 160px;
+  padding: 1.5rem;
+}
+
 .helper-text {
   font-size: 0.8rem;
   color: #8aacbe;
   margin-bottom: 0.75rem;
   line-height: 1.5;
+}
+
+/* ── Admin Register Doctor ── */
+.admin-info-card {
+  margin-bottom: 1.1rem;
+}
+
+.admin-info-text {
+  font-size: 0.85rem;
+  color: #5a8094;
+  line-height: 1.55;
+}
+
+.admin-form-card {
+  border-top: 3px solid #7c3aed;
+}
+
+.admin-badge {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #5a8094;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border: 1.5px solid #d4e8f2;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: #fafcfd;
+  color: #1a3347;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #00b4d8;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.12);
+  background: white;
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+  background: #f4f9fc;
+  cursor: not-allowed;
+}
+
+.form-group select {
+  cursor: pointer;
 }
 
 .sensor-panel textarea {
@@ -655,6 +792,32 @@ body {
   color: #7f1d1d;
   font-size: 0.85rem;
   line-height: 1.5;
+}
+
+.success-card {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.success-card strong {
+  color: #15803d;
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.success-card p {
+  color: #166534;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.admin-error {
+  margin-bottom: 1rem;
 }
 
 .result-body {
@@ -809,6 +972,76 @@ body {
   border-bottom: none;
 }
 
+/* ── History ── */
+.history-search-card {
+  margin-bottom: 1.1rem;
+}
+
+.history-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.history-email-group {
+  flex: 1;
+  min-width: 240px;
+}
+
+.history-load-btn {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: white;
+  border: none;
+  border-radius: 28px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 4px 16px rgba(0, 119, 182, 0.25);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.history-load-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 119, 182, 0.35);
+}
+
+.history-load-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.history-error {
+  margin-bottom: 1.1rem;
+}
+
+.history-loading-card {
+  margin-bottom: 1.1rem;
+}
+
+.history-loading-card .output-placeholder {
+  min-height: 140px;
+}
+
+.history-empty-card {
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+.history-empty-text {
+  font-size: 0.95rem;
+  color: #7a9eb0;
+}
+
+.history-symptoms-cell {
+  max-width: 220px;
+  line-height: 1.45;
+}
+
 /* ── Footer ── */
 .client-footer {
   text-align: center;
@@ -865,6 +1098,10 @@ body {
 
   .feature-strip {
     flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }
 
