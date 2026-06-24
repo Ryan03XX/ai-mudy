@@ -37,12 +37,33 @@ export const DEMO_PAYMENTS = [
   },
 ];
 
-export const DOCTOR_CATEGORIES = [
-  "Emergency",
-  "Urgent",
-  "Routine",
-  "General",
+export const DOCTOR_SPECIALIZATIONS = [
+  "General Medicine",
+  "Emergency Medicine",
   "Cardiology",
-  "Respiratory",
+  "ENT",
+  "Dermatology",
+  "Pediatrics",
+  "Orthopedics",
+  "Gastroenterology",
+  "Psychiatry",
   "Neurology",
 ];
+
+export const DOCTOR_CATEGORIES = [
+  "General",
+  "Routine",
+  "Follow-up",
+  "Acute Care",
+  "Emergency",
+  "Cardiology",
+  "ENT",
+  "Dermatology",
+  "Pediatrics",
+  "Orthopedics",
+  "Gastroenterology",
+  "Psychiatry",
+  "Neurology",
+];
+
+export const DOCTOR_AVAILABILITY_OPTIONS = ["Available", "Unavailable"];

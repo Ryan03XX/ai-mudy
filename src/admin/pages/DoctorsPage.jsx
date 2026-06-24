@@ -1,7 +1,11 @@
 import { useRef, useState } from "react";
 import { WEBHOOKS, IS_TEST_MODE } from "../../config/webhooks";
 import { downloadDoctorTemplate, parseDoctorExcelFile } from "../../utils/doctorExcel";
-import { DOCTOR_CATEGORIES } from "../demoData";
+import {
+  DOCTOR_AVAILABILITY_OPTIONS,
+  DOCTOR_CATEGORIES,
+  DOCTOR_SPECIALIZATIONS,
+} from "../demoData";
 
 const INITIAL_FORM = {
   name: "",
@@ -55,9 +59,9 @@ export default function DoctorsPage() {
       name: form.name.trim(),
       email: form.email.trim(),
       phone: form.phone.trim(),
-      specialization: form.specialization.trim(),
+      specialization: form.specialization,
       category: form.category,
-      is_available: form.availability === "available",
+      availability: form.availability,
     };
 
     try {
@@ -129,8 +133,12 @@ export default function DoctorsPage() {
           <h3>How This Fits the System</h3>
           <p className="admin-info-text">
             Admin registers doctors into the database. These doctors will later be used by the AI
-            appointment booking workflow to automatically assign a suitable doctor based on urgency
-            category and specialization.
+            appointment booking workflow to automatically assign a suitable doctor based on AI
+            matching category and medical specialization.
+          </p>
+          <p className="helper-text admin-field-note">
+            Specialization is the doctor&apos;s medical field. Category is used by the AI booking
+            workflow to match patients to suitable doctors.
           </p>
         </div>
       </section>
@@ -148,7 +156,7 @@ export default function DoctorsPage() {
 
         <p className="helper-text">
           Upload an Excel file with columns: name, email, phone, specialization, category, availability.
-          Use <strong>Available</strong> or <strong>Not Available</strong> for availability.
+          Use <strong>Available</strong> or <strong>Unavailable</strong> for availability.
         </p>
 
         {importSuccess && (
@@ -191,6 +199,10 @@ export default function DoctorsPage() {
           <h3>Doctor Registration Form</h3>
         </div>
         <p className="helper-text">Submit doctor details to the n8n register-doctor webhook.</p>
+        <p className="helper-text admin-field-note">
+          Specialization is the doctor&apos;s medical field. Category is used by the AI booking
+          workflow to match patients to suitable doctors.
+        </p>
 
         {success && (
           <div className="success-card">
@@ -249,21 +261,26 @@ export default function DoctorsPage() {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="specialization">Specialization</label>
-            <input
-              id="specialization"
-              name="specialization"
-              type="text"
-              placeholder="e.g. General Medicine"
-              value={form.specialization}
-              onChange={handleChange}
-              disabled={loading}
-              required
-            />
-          </div>
-
           <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="specialization">Specialization</label>
+              <select
+                id="specialization"
+                name="specialization"
+                value={form.specialization}
+                onChange={handleChange}
+                disabled={loading}
+                required
+              >
+                <option value="">Select specialization</option>
+                {DOCTOR_SPECIALIZATIONS.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="form-group">
               <label htmlFor="category">Category</label>
               <select
@@ -275,29 +292,32 @@ export default function DoctorsPage() {
                 required
               >
                 <option value="">Select category</option>
-                {DOCTOR_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                {DOCTOR_CATEGORIES.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
                   </option>
                 ))}
               </select>
             </div>
+          </div>
 
-            <div className="form-group">
-              <label htmlFor="availability">Availability</label>
-              <select
-                id="availability"
-                name="availability"
-                value={form.availability}
-                onChange={handleChange}
-                disabled={loading}
-                required
-              >
-                <option value="">Select availability</option>
-                <option value="available">Available</option>
-                <option value="not_available">Not Available</option>
-              </select>
-            </div>
+          <div className="form-group">
+            <label htmlFor="availability">Availability</label>
+            <select
+              id="availability"
+              name="availability"
+              value={form.availability}
+              onChange={handleChange}
+              disabled={loading}
+              required
+            >
+              <option value="">Select availability</option>
+              {DOCTOR_AVAILABILITY_OPTIONS.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button type="submit" className="submit-btn admin-submit-btn" disabled={loading}>

@@ -1,17 +1,16 @@
 import { useAuth } from "../../context/AuthContext";
-import { cleanValue, getUrgencyClass } from "../../utils/helpers";
-import { usePatientHistory } from "../../hooks/usePatientHistory";
+import { getUrgencyClass } from "../../utils/helpers";
+import { useMyAppointments } from "../../hooks/useMyAppointments";
 
 export default function AppointmentsPage() {
   const { userProfile } = useAuth();
-  const { history, loading, error } = usePatientHistory(userProfile?.email);
-  const hasLoaded = !loading;
+  const { appointments, loading, error } = useMyAppointments(userProfile?.email);
 
   return (
     <div className="page-content">
       <div className="page-title">
         <h1>My Appointments</h1>
-        <p>Your triage and appointment history for {userProfile?.email || "your account"}.</p>
+        <p>Your booked appointments for {userProfile?.email || "your account"}.</p>
       </div>
 
       {error && (
@@ -25,47 +24,47 @@ export default function AppointmentsPage() {
         <div className="card history-loading-card">
           <div className="output-placeholder loading-state">
             <div className="spinner"></div>
-            <p>Loading your appointment history...</p>
+            <p>Loading your appointments...</p>
           </div>
         </div>
       )}
 
-      {!loading && hasLoaded && history.length === 0 && !error && (
+      {!loading && appointments.length === 0 && !error && (
         <div className="card history-empty-card">
-          <p className="history-empty-text">No appointment history found.</p>
+          <p className="history-empty-text">No appointments found.</p>
         </div>
       )}
 
-      {!loading && history.length > 0 && (
+      {!loading && appointments.length > 0 && (
         <div className="card">
           <div className="table-wrap">
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Date Created</th>
-                  <th>Symptoms</th>
-                  <th>Urgency</th>
-                  <th>Category</th>
                   <th>Appointment Date</th>
                   <th>Appointment Time</th>
+                  <th>Doctor Name</th>
+                  <th>Doctor Email</th>
+                  <th>Urgency</th>
+                  <th>Category</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {history.map((entry) => (
+                {appointments.map((entry) => (
                   <tr key={entry.id}>
-                    <td>{cleanValue(entry.created_at) || "N/A"}</td>
-                    <td className="history-symptoms-cell">{cleanValue(entry.patient_symptoms) || "N/A"}</td>
+                    <td>{entry.appointmentDate}</td>
+                    <td>{entry.appointmentTime}</td>
+                    <td>{entry.doctorName}</td>
+                    <td>{entry.doctorEmail}</td>
                     <td>
                       <span className={`urgency-badge ${getUrgencyClass(entry.urgency)}`}>
-                        {cleanValue(entry.urgency) || "N/A"}
+                        {entry.urgency}
                       </span>
                     </td>
-                    <td>{cleanValue(entry.category) || "N/A"}</td>
-                    <td>{cleanValue(entry.appointment_date) || "N/A"}</td>
-                    <td>{cleanValue(entry.appointment_time) || "N/A"}</td>
+                    <td>{entry.category}</td>
                     <td>
-                      <span className="appointment-status">{cleanValue(entry.status) || "N/A"}</span>
+                      <span className="appointment-status">{entry.status}</span>
                     </td>
                   </tr>
                 ))}

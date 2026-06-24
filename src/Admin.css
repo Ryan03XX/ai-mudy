@@ -221,6 +221,10 @@
   min-width: 180px;
 }
 
+.admin-field-note {
+  margin-top: 0.5rem;
+}
+
 .admin-import-card {
   margin-bottom: 1.1rem;
   border-top: 3px solid #7c3aed;
@@ -246,6 +250,55 @@
   background: #f8fafc;
   font-family: inherit;
   font-size: 0.875rem;
+}
+
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.admin-pagination-info {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.admin-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.admin-page-size-label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.admin-page-size-select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  background: white;
+}
+
+.admin-page-btn {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+.admin-page-indicator {
+  font-size: 0.85rem;
+  color: #475569;
+  min-width: 90px;
+  text-align: center;
 }
 
 .urgent-queue-card {

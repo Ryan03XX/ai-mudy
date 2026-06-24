@@ -888,6 +888,16 @@ body {
   line-height: 1.5;
 }
 
+.triage-category-note {
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+.slot-empty-message {
+  color: #c2410c;
+  font-weight: 500;
+}
+
 /* ── Admin Register Doctor ── */
 .admin-info-card {
   margin-bottom: 1.1rem;

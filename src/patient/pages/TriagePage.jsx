@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { fetchAvailableSlots } from "../../api/availableSlots";
 import { bookAppointment } from "../../api/bookAppointment";
 import { TRIAGE_WEBHOOK_URL } from "../../config/webhooks";
-import { getSlotLabel, isSlotBooked, TIME_SLOTS } from "../../data/appointmentSlots";
 import { useAuth } from "../../context/AuthContext";
 import { cleanValue, getMedicalRecommendation, getUrgencyClass } from "../../utils/helpers";
 import { isHighUrgency, isLowUrgency } from "../../utils/urgency";
@@ -19,6 +19,9 @@ export default function TriagePage() {
   const [bookingResult, setBookingResult] = useState(null);
   const [error, setError] = useState("");
   const [bookingError, setBookingError] = useState("");
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [slotsError, setSlotsError] = useState("");
 
   const patientEmail = userProfile?.email?.trim() || "";
   const patientPhone = userProfile?.phone?.trim() || "";
@@ -48,6 +51,8 @@ export default function TriagePage() {
     setBookingResult(null);
     setAppointmentDate("");
     setAppointmentTime("");
+    setAvailableSlots([]);
+    setSlotsError("");
     setCurrentStep(2);
 
     try {
@@ -93,12 +98,6 @@ export default function TriagePage() {
       return;
     }
 
-    const booked = isSlotBooked(appointmentDate, appointmentTime);
-    if (booked && !highUrgency) {
-      setBookingError("This time slot is already booked. Please choose another slot.");
-      return;
-    }
-
     setBookingLoading(true);
     setBookingError("");
     setBookingResult(null);
@@ -111,7 +110,7 @@ export default function TriagePage() {
       patient_phone: patientPhone,
       appointment_date: appointmentDate,
       appointment_time: appointmentTime,
-      is_urgent_override: highUrgency,
+      is_urgent_override: cleanValue(result.urgency) === "High",
     };
 
     try {
@@ -130,10 +129,39 @@ export default function TriagePage() {
     }
   }
 
-  function handleDateChange(e) {
-    setAppointmentDate(e.target.value);
+  async function handleDateChange(e) {
+    const date = e.target.value;
+    setAppointmentDate(date);
     setAppointmentTime("");
     setBookingError("");
+    setSlotsError("");
+    setAvailableSlots([]);
+
+    if (!date) return;
+
+    setSlotsLoading(true);
+
+    try {
+      const slots = await fetchAvailableSlots(date);
+      setAvailableSlots(slots);
+    } catch (err) {
+      if (err.message.includes("Failed to fetch")) {
+        setSlotsError(
+          "Unable to load available time slots. Check that n8n is running and the available-slots webhook is set up."
+        );
+      } else {
+        setSlotsError(err.message || "Failed to load available time slots.");
+      }
+    } finally {
+      setSlotsLoading(false);
+    }
+  }
+
+  function resetBookingFields() {
+    setAppointmentDate("");
+    setAppointmentTime("");
+    setAvailableSlots([]);
+    setSlotsError("");
   }
 
   function goToStep1() {
@@ -142,24 +170,21 @@ export default function TriagePage() {
     setBookingError("");
     setResult(null);
     setBookingResult(null);
-    setAppointmentDate("");
-    setAppointmentTime("");
+    resetBookingFields();
   }
 
   function goToStep2() {
     setCurrentStep(2);
     setBookingError("");
     setBookingResult(null);
-    setAppointmentDate("");
-    setAppointmentTime("");
+    resetBookingFields();
   }
 
   function goToStep3() {
     setCurrentStep(3);
     setBookingError("");
     setBookingResult(null);
-    setAppointmentDate("");
-    setAppointmentTime("");
+    resetBookingFields();
   }
 
   return (
@@ -267,8 +292,11 @@ export default function TriagePage() {
                     </span>
                   </div>
                   <div className="result-row">
-                    <span className="result-label">Category</span>
+                    <span className="result-label">AI Matching Category</span>
                     <span className="result-value">{cleanValue(result.category) || "N/A"}</span>
+                    <p className="helper-text triage-category-note">
+                      Used to match you with a suitable doctor. This is not urgency level.
+                    </p>
                   </div>
                   <div className="result-row">
                     <span className="result-label">Reasoning</span>
@@ -319,7 +347,7 @@ export default function TriagePage() {
             {!bookingResult && (
               <>
                 <p className="helper-text">
-                  Select your preferred date and time slot to complete your appointment request.
+                  Select your preferred date and available time slot (9:00 AM – 6:00 PM, every 30 minutes).
                 </p>
 
                 {highUrgency && (
@@ -352,34 +380,43 @@ export default function TriagePage() {
                           setAppointmentTime(e.target.value);
                           setBookingError("");
                         }}
-                        disabled={bookingLoading || !appointmentDate}
+                        disabled={
+                          bookingLoading ||
+                          slotsLoading ||
+                          !appointmentDate ||
+                          availableSlots.length === 0
+                        }
                         required
                       >
-                        <option value="">Select time slot</option>
-                        {TIME_SLOTS.map((slot) => {
-                          const booked = isSlotBooked(appointmentDate, slot);
-                          const disabled = booked && !highUrgency;
-                          return (
-                            <option key={slot} value={slot} disabled={disabled}>
-                              {getSlotLabel(slot, appointmentDate)}
-                            </option>
-                          );
-                        })}
+                        <option value="">
+                          {slotsLoading ? "Loading slots..." : "Select time slot"}
+                        </option>
+                        {availableSlots.map((slot) => (
+                          <option key={slot} value={slot}>
+                            {slot}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
 
-                  {appointmentDate && (
-                    <div className="slot-legend">
-                      {TIME_SLOTS.map((slot) => (
-                        <span
-                          key={slot}
-                          className={`slot-legend-item ${isSlotBooked(appointmentDate, slot) ? "slot-booked" : "slot-available"}`}
-                        >
-                          {getSlotLabel(slot, appointmentDate)}
-                        </span>
-                      ))}
+                  {slotsLoading && appointmentDate && (
+                    <div className="output-placeholder loading-state">
+                      <div className="spinner"></div>
+                      <p>Loading available time slots...</p>
                     </div>
+                  )}
+
+                  {slotsError && (
+                    <div className="error-card">
+                      <p>{slotsError}</p>
+                    </div>
+                  )}
+
+                  {!slotsLoading && appointmentDate && !slotsError && availableSlots.length === 0 && (
+                    <p className="helper-text slot-empty-message">
+                      No available time slots for this date. Please choose another date.
+                    </p>
                   )}
 
                   {bookingError && (
@@ -397,7 +434,7 @@ export default function TriagePage() {
                     >
                       Back to Result
                     </button>
-                    <button type="submit" className="submit-btn wizard-next-btn" disabled={bookingLoading}>
+                    <button type="submit" className="submit-btn wizard-next-btn" disabled={bookingLoading || slotsLoading || !appointmentTime}>
                       {bookingLoading ? "Booking..." : "Book Appointment"}
                     </button>
                   </div>

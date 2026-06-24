@@ -1,18 +1,23 @@
-export const TIME_SLOTS = ["1:00 PM", "2:00 PM", "3:00 PM"];
-
-// Hardcoded booked slots by date (can be replaced with API/history later)
-export const BOOKED_SLOTS = {
-  "2025-06-20": ["1:00 PM"],
-  "2025-06-21": ["1:00 PM"],
-  "2025-06-22": ["2:00 PM"],
-};
-
-export function isSlotBooked(date, slot) {
-  if (!date) return false;
-  return (BOOKED_SLOTS[date] || []).includes(slot);
-}
-
-export function getSlotLabel(slot, date) {
-  const booked = isSlotBooked(date, slot);
-  return `${slot} - ${booked ? "Booked" : "Available"}`;
-}
+// All appointment slots: 9:00 AM – 6:00 PM, every 30 minutes.
+// The booking UI loads available slots from the n8n available-slots webhook.
+export const ALL_APPOINTMENT_SLOTS = [
+  "9:00 AM",
+  "9:30 AM",
+  "10:00 AM",
+  "10:30 AM",
+  "11:00 AM",
+  "11:30 AM",
+  "12:00 PM",
+  "12:30 PM",
+  "1:00 PM",
+  "1:30 PM",
+  "2:00 PM",
+  "2:30 PM",
+  "3:00 PM",
+  "3:30 PM",
+  "4:00 PM",
+  "4:30 PM",
+  "5:00 PM",
+  "5:30 PM",
+  "6:00 PM",
+];

@@ -3,16 +3,16 @@ import { useAuth } from "../../context/AuthContext";
 import {
   countPastTriageChecks,
   countUpcomingAppointments,
-  usePatientHistory,
-} from "../../hooks/usePatientHistory";
+} from "../../api/myAppointments";
+import { useMyAppointments } from "../../hooks/useMyAppointments";
 
 export default function HomePage() {
   const { userProfile } = useAuth();
-  const { history, loading } = usePatientHistory(userProfile?.email);
+  const { appointments, loading } = useMyAppointments(userProfile?.email);
   const firstName = userProfile?.name?.split(" ")[0] || "Patient";
 
-  const pastTriageCount = loading ? "—" : countPastTriageChecks(history);
-  const upcomingCount = loading ? "—" : countUpcomingAppointments(history);
+  const pastTriageCount = loading ? "—" : countPastTriageChecks(appointments);
+  const upcomingCount = loading ? "—" : countUpcomingAppointments(appointments);
 
   return (
     <div className="page-content">

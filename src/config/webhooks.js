@@ -8,6 +8,9 @@ export const WEBHOOKS = {
   HISTORY_TEST: "http://localhost:5678/webhook-test/history",
   HISTORY_PRODUCTION: "http://localhost:5678/webhook/history",
 
+  MY_APPOINTMENTS_TEST: "http://localhost:5678/webhook-test/my-appointments",
+  MY_APPOINTMENTS_PRODUCTION: "http://localhost:5678/webhook/my-appointments",
+
   BOOKING_TEST: "http://localhost:5678/webhook-test/book-appointment",
   BOOKING_PRODUCTION: "http://localhost:5678/webhook/book-appointment",
 
@@ -19,6 +22,8 @@ export const WEBHOOKS = {
 
   ADMIN_DASHBOARD_TEST: "http://localhost:5678/webhook-test/admin-dashboard",
   ADMIN_DASHBOARD_PRODUCTION: "http://localhost:5678/webhook/admin-dashboard",
+
+  AVAILABLE_SLOTS_PRODUCTION: "http://localhost:5678/webhook/available-slots",
 };
 
 // Production webhooks — workflows must be Active in n8n (no manual Execute needed)
@@ -43,3 +48,9 @@ export const DOCTORS_WEBHOOK_URL = IS_TEST_MODE
 export const ADMIN_DASHBOARD_WEBHOOK_URL = IS_TEST_MODE
   ? WEBHOOKS.ADMIN_DASHBOARD_TEST
   : WEBHOOKS.ADMIN_DASHBOARD_PRODUCTION;
+
+export const AVAILABLE_SLOTS_WEBHOOK_URL = WEBHOOKS.AVAILABLE_SLOTS_PRODUCTION;
+
+export const MY_APPOINTMENTS_WEBHOOK_URL = IS_TEST_MODE
+  ? WEBHOOKS.MY_APPOINTMENTS_TEST
+  : WEBHOOKS.MY_APPOINTMENTS_PRODUCTION;

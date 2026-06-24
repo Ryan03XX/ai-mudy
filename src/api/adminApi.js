@@ -24,12 +24,23 @@ function parseBoolean(value) {
   return false;
 }
 
+function normalizeAvailability(value) {
+  const text = cleanValue(value).toLowerCase();
+
+  if (text === "unavailable" || text === "not available" || text === "false" || value === false) {
+    return "Unavailable";
+  }
+  if (text === "available" || text === "true" || value === true) {
+    return "Available";
+  }
+
+  return cleanValue(value) || "Available";
+}
+
 export function normalizeDoctor(row) {
-  const available = row.is_available;
-  const availability =
-    available === false || available === "false"
-      ? "Not Available"
-      : row.availability || "Available";
+  const availability = normalizeAvailability(
+    row.availability !== undefined ? row.availability : row.is_available
+  );
 
   return {
     name: cleanValue(row.name) || "N/A",

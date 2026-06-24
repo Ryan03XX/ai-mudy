@@ -24,7 +24,7 @@ const TEMPLATE_ROWS = [
     phone: "+60 13-456 7890",
     specialization: "Cardiology",
     category: "Cardiology",
-    availability: "Not Available",
+    availability: "Unavailable",
   },
 ];
 
@@ -68,9 +68,9 @@ function parseAvailability(value) {
     .toLowerCase();
 
   if (!text) return null;
-  if (["available", "true", "yes", "1"].includes(text)) return true;
-  if (["not available", "unavailable", "false", "no", "0"].includes(text)) {
-    return false;
+  if (["available", "true", "yes", "1"].includes(text)) return "Available";
+  if (["unavailable", "not available", "false", "no", "0"].includes(text)) {
+    return "Unavailable";
   }
   return null;
 }
@@ -121,7 +121,7 @@ export function parseDoctorRowsFromSheet(rows) {
       phone,
       specialization,
       category,
-      is_available: availability,
+      availability,
     });
   }
 
